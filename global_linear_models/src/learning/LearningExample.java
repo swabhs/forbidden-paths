@@ -2,8 +2,6 @@ package learning;
 
 import java.util.List;
 
-import hypergraph.HypergraphProto.Hypergraph;
-
 /**
  * A single data point for learning
  * @author swabha

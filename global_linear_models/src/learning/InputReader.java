@@ -1,7 +1,5 @@
 package learning;
 
-import hypergraph.HypergraphProto.Hypergraph;
-
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
@@ -9,13 +7,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import tagging_hypergraph.HypGeneratorUtils;
-import tagging_hypergraph.TaggingHypergraphGenerator;
 
 public class InputReader {
 	
@@ -64,19 +59,19 @@ public class InputReader {
 			
 			List<String> tokens = new ArrayList<String>();
 			List<String> tags = new ArrayList<String>();
-			String tagSequence = "";
+			//String tagSequence = "";
 			while ((strLine = br.readLine()) != null) {
 				String[] items = strLine.split(" ");
 				if (items.length < 2) {
 					examples.add(new LearningExample(tokens, tags));
 					tokens = new ArrayList<String>();
 					tags.clear(); 
-					tagSequence = "";
+					//tagSequence = "";
 				} else {
 					
 					tokens.add(items[0]);
 					tags.add(items[1]);
-					tagSequence += " " + items[1];
+					//tagSequence += " " + items[1];
 				}				
 			}				
 		} catch(IOException e) {

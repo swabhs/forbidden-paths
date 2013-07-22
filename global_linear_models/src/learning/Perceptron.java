@@ -1,15 +1,14 @@
 package learning;
 
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import semiring.Derivation;
+
 import tagging_hypergraph.TaggingHypergraphGenerator;
-import decoding.Decoder;
+
+import decoding.TaggingDecoder;
 import decoding.Viterbi3;
 
 import hypergraph.HypergraphProto.Hypergraph;
@@ -45,22 +44,21 @@ public class Perceptron {
 				// Get the predicted tag sequence
 				Map<Integer, List<Derivation>> derivations = viterbi.run(sentenceHypergraph);
 				System.out.println(derivations.size());
-				Decoder decoder = new Decoder();
-				String backPointers = decoder.getKBestPaths(
+				TaggingDecoder decoder = new TaggingDecoder();
+				List<List<String>> predictedTags = decoder.getKBestTagSequences(
 						derivations.get(rootVertex), sentenceHypergraph);
-				List<String> predictedTags = Arrays.asList(backPointers.split(" "));
+				
 				
 				// TODO: fix this!
-				if (backPointers.equals(example.getTagSequence())) {
+				if (predictedTags.get(0).equals(example.getTagSequence())) {
 					// do nothing
 				} else {
 					// update weightsMap
 					Map<String, Double> predictedFeatures = 
-							PerceptronUtils.getFeatureVector(tokens, predictedTags);
+							PerceptronUtils.getFeatureVector(tokens, predictedTags.get(0));
 					Map<String, Double> difference = 
 							PerceptronUtils.mapSubtraction(trueFeatures, predictedFeatures);
-					Map<String, Double> weighMap = 
-							PerceptronUtils.mapAddition(weightsMap, difference);
+					weightsMap = PerceptronUtils.mapAddition(weightsMap, difference);
 					// construct new hypergraph using the new weightsMap
 				}
 			}
@@ -74,6 +72,7 @@ public class Perceptron {
 		List<LearningExample> examples = InputReader.readExample(
 				new File("data/gene.train"), initialWeights);
 		Map<String, Double> finalWeights = perceptron.run(examples, initialWeights);
+		System.out.println(finalWeights.size());
 	}
 
 }

@@ -15,7 +15,6 @@ public class PerceptronUtils {
 	 */
 	static Map<String, Double> getFeatureVector(List<String> tokens, List<String> tags) {
 		Map<String, Double> globalFeatures = new TreeMap<String, Double>();
-		List<History> histories = new ArrayList<History>();
 		for (String token : tokens) {
 			int pos = tokens.indexOf(token);
 			
