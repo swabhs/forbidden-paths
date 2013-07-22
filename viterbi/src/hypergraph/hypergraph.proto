@@ -1,0 +1,24 @@
+package hypergraph;
+
+option java_outer_classname = "HypergraphProto";
+
+message Vertex {
+  // Consecutive ids assigned to vertices, starting from 0
+  required int32 id = 1;
+  required string name = 2;
+  repeated int32 inEdge = 3;
+  repeated int32 outEdge = 4;
+} 
+
+message Hyperedge {
+  // Consecutive ids assigned to hyperedges, starting from 0
+  required int32 id = 1;
+  required double weight = 2;
+  repeated int32 childrenIds = 3;
+  optional int32 parentId = 4;
+}
+
+message Hypergraph {
+  repeated Vertex vertices = 1;
+  repeated Hyperedge edges = 2;
+}
