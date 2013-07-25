@@ -27,6 +27,7 @@ import learning.InputReader;
 public class TaggingHypergraphGenerator {
 	
 	static final List<String> tags = Arrays.asList("I-GENE", "O");
+	static final int numTags = tags.size();
 	
 	// Vertex Maps
 	private static Map<Integer, List<Integer>> outEdgeMap;
@@ -39,7 +40,6 @@ public class TaggingHypergraphGenerator {
 	private static Map<Integer, Double> edgeWeightMap;
 	
 	
-	
 	static void fillAllMaps(List<String> tokens) {
 		outEdgeMap = new TreeMap<Integer, List<Integer>>();
 		inEdgeMap = new TreeMap<Integer, List<Integer>>();
@@ -47,14 +47,13 @@ public class TaggingHypergraphGenerator {
 		
 		childMap = new TreeMap<Integer, List<Integer>>();
 		parentMap = new TreeMap<Integer, Integer>();
-		
-		final int numTags = tags.size();
+				
 		int vertexId = 0; int edgeId = 0;
 		
 		// add the first numTags vertices
 		for (String tag : tags) {
 			vertexNameMap.put(vertexId, tokens.get(0) + "_*_" + tag);
-			
+			inEdgeMap.put(vertexId, new ArrayList<Integer>());
 			outEdgeMap.put(vertexId, HypGeneratorUtils.getConsecutiveIntegers(edgeId, numTags * numTags));
 			int firstNextLevelVertex = numTags * numTags  + numTags;
 			for (int i = 0; i < numTags * numTags; i++) {
@@ -81,6 +80,11 @@ public class TaggingHypergraphGenerator {
 			for (String firstTag : tags) {
 				for (String secondTag : tags) {
 					vertexNameMap.put(vertexId, token + "_" + firstTag + "_" + secondTag);
+					
+					// if first position, add empty list as incoming edge list
+					if (tokens.indexOf(token) == 0) {
+						inEdgeMap.put(vertexId, new ArrayList<Integer>());
+					}
 					
 					// if not last position, add numTags^2 outgoing edges
 					if (tokens.indexOf(token) != tokens.size() - 1) {
@@ -142,10 +146,8 @@ public class TaggingHypergraphGenerator {
 	 * @return
 	 */
 	static void addWeightsToHypergraph(Map<String, Double> weights) {
-		
-		int numTags = tags.size();
-		
-		Map<Integer, Double> edgeWeightMap = new TreeMap<Integer, Double>();
+		edgeWeightMap = new TreeMap<Integer, Double>();
+				
 		for (int edge : childMap.keySet()) {
 			//System.out.println("edge id: " + edge);
 			
@@ -212,6 +214,7 @@ public class TaggingHypergraphGenerator {
 		
 		List<Hyperedge> edges = new ArrayList<Hyperedge>();
 		for (Integer eId : parentMap.keySet()) {
+			System.out.println("Edge: " + eId + " parent: " + parentMap.get(eId) + " child: " + childMap.get(eId));
 			edges.add(Hyperedge.newBuilder()
 					.setId(eId)
 					.setWeight(edgeWeightMap.get(eId))
@@ -226,6 +229,7 @@ public class TaggingHypergraphGenerator {
 			if (outEdges == null) {
 				outEdges = new ArrayList<Integer>();
 			}
+			System.out.println("Vertex: " + vId + " incoming: " + inEdgeMap.get(vId) + " outgoing: " + outEdges);
 			vertices.add(Vertex.newBuilder()
 					.setId(vId)
 					.setName(vertexNameMap.get(vId))
