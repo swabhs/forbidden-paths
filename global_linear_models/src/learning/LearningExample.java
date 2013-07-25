@@ -7,7 +7,7 @@ import java.util.List;
  * @author swabha
  *
  */
-class LearningExample {
+public class LearningExample {
 
 	private List<String> tokens;
 	

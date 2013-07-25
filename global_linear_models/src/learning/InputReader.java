@@ -65,7 +65,7 @@ public class InputReader {
 				if (items.length < 2) {
 					examples.add(new LearningExample(tokens, tags));
 					tokens = new ArrayList<String>();
-					tags.clear(); 
+					tags = new ArrayList<String>();
 					//tagSequence = "";
 				} else {
 					

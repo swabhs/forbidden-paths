@@ -43,11 +43,10 @@ public class Perceptron {
 				
 				// Get the predicted tag sequence
 				Map<Integer, List<Derivation>> derivations = viterbi.run(sentenceHypergraph);
-				System.out.println(derivations.size());
+				System.out.println("# derviations: " + derivations.size());
 				TaggingDecoder decoder = new TaggingDecoder();
 				List<List<String>> predictedTags = decoder.getKBestTagSequences(
 						derivations.get(rootVertex), sentenceHypergraph);
-				
 				
 				// TODO: fix this!
 				if (predictedTags.get(0).equals(example.getTagSequence())) {
